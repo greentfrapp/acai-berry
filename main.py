@@ -13,7 +13,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_bool('train', False, 'Train')
 flags.DEFINE_bool('generate', False, 'Generate')
 
-flags.DEFINE_integer('steps', 5000, 'Number of training steps')
+flags.DEFINE_integer('steps', 10000, 'Number of training steps')
 flags.DEFINE_string('savepath', 'saved_models/', 'Path to save or load models')
 
 def main(unused_args):
