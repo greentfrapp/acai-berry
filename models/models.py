@@ -1,7 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
-from BaseModel import BaseModel
+from .BaseModel import BaseModel
+
 
 class ACAI(BaseModel):
 
@@ -92,7 +93,7 @@ class Encoder(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_1'.format(i),
 			)
 			relu_1 = tf.nn.leaky_relu(
@@ -106,7 +107,7 @@ class Encoder(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_2'.format(i),
 			)
 			relu_2 = tf.nn.leaky_relu(
@@ -128,7 +129,7 @@ class Encoder(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_1',
 		)
 		final_relu = tf.nn.leaky_relu(
@@ -142,7 +143,7 @@ class Encoder(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_2',
 		)
 		self.outputs = final_conv_2
@@ -168,7 +169,7 @@ class Decoder(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_1'.format(i),
 			)
 			relu_1 = tf.nn.leaky_relu(
@@ -182,7 +183,7 @@ class Decoder(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_2'.format(i),
 			)
 			relu_2 = tf.nn.leaky_relu(
@@ -203,7 +204,7 @@ class Decoder(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_1',
 		)
 		final_relu = tf.nn.leaky_relu(
@@ -217,7 +218,7 @@ class Decoder(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_2',
 		)
 		self.outputs = final_conv_2
@@ -244,7 +245,7 @@ class Critic(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_1'.format(i),
 			)
 			relu_1 = tf.nn.leaky_relu(
@@ -258,7 +259,7 @@ class Critic(BaseModel):
 				strides=(1, 1),
 				padding='same',
 				activation=None,
-				# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+				kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 				name='conv{}_2'.format(i),
 			)
 			relu_2 = tf.nn.leaky_relu(
@@ -280,7 +281,7 @@ class Critic(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_1',
 		)
 		final_relu = tf.nn.leaky_relu(
@@ -294,7 +295,7 @@ class Critic(BaseModel):
 			strides=(1, 1),
 			padding='same',
 			activation=None,
-			# kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
+			kernel_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
 			name='conv_final_2',
 		)
 		running_output = tf.sigmoid(final_conv_2)

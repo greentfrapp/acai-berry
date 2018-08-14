@@ -6,15 +6,22 @@ from absl import app
 from PIL import Image
 
 from models import ACAI
-from task import LineTask
+from tasks import LineTask
 
 FLAGS = flags.FLAGS
 
 flags.DEFINE_bool('train', False, 'Train')
 flags.DEFINE_bool('generate', False, 'Generate')
 
+# --train parameters
 flags.DEFINE_integer('steps', 10000, 'Number of training steps')
 flags.DEFINE_string('savepath', 'saved_models/', 'Path to save or load models')
+
+# --generate parameters
+flags.DEFINE_integer('intervals', 10, 'Number of intervals to interpolate (includes start and end')
+flags.DEFINE_integer('start', None, 'Starting angle in degrees, where 0 refers to straight down, counting clockwise')
+flags.DEFINE_integer('end', None, 'Ending angle in degrees, where 0 refers to straight down, counting clockwise')
+
 
 def main(unused_args):
 
@@ -28,17 +35,16 @@ def main(unused_args):
 			samples_1, samples_2, alpha = task.next_batch(64)
 			feed_dict = {
 				model.inputs_image_1: samples_1,
-				model.inputs_image_2: samples_2,
+				model.inputs_image_2: samples_1[::-1],
 				model.inputs_alpha: alpha,
 			}
-			autoencoder_loss, recon_loss_1, recon_loss_2, _, recon = sess.run([model.autoencoder_loss, model.reconstruction_loss_1, model.reconstruction_loss_2, model.autoencoder_optimize, model.decoder_1.outputs], feed_dict)
-			critic_loss, _ = sess.run([model.critic_loss, model.critic_optimize], feed_dict)
-			critic_score = sess.run(model.critic_interpolation.outputs, feed_dict)
-			if step % 50 == 0:
-				print('Step {} - autoencoder loss: {:.3f} - critic loss: {:.3f} - average critic score: {:.3f}'.format(step, autoencoder_loss, critic_loss, np.mean(critic_score)))
-				print((np.max(recon), np.min(recon)))
-				print(recon_loss_1)
-				print(recon_loss_2)
+			autoencoder_loss, recon_loss_1, _, recon = sess.run([model.autoencoder_loss, model.reconstruction_loss_1, model.autoencoder_optimize, model.decoder_1.outputs], feed_dict)
+			critic_loss, critic_score, _ = sess.run([model.critic_loss, model.critic_interpolation.outputs, model.critic_optimize], feed_dict)
+			if step % 100 == 0:
+				print('Step #{}'.format(step))
+				print('Autoencoder Loss: {:.4f} - Reconstruction Loss: {:.4f}'.format(autoencoder_loss, recon_loss_1))
+				print('Critic Loss: {:.4f} - Average Critic Score: {:.3f}'.format(critic_loss, np.mean(critic_score)))
+				# print((np.max(recon), np.min(recon)))
 				model.save(sess, FLAGS.savepath, step)
 	elif FLAGS.generate:
 		model = ACAI()
@@ -46,8 +52,8 @@ def main(unused_args):
 		sess = tf.Session()
 		sess.run(tf.global_variables_initializer())
 		model.load(sess, FLAGS.savepath, verbose=True)
-		samples_1, samples_2, _ = task.next_batch(1)
-		intervals = 10
+		samples_1, samples_2, _ = task.next_batch(1, start=FLAGS.start, end=FLAGS.end)
+		intervals = max(2, FLAGS.intervals)
 		interpolations = []
 
 		for i in range(intervals + 1):
@@ -60,7 +66,7 @@ def main(unused_args):
 			interpolation = sess.run(model.decoder_interpolation.outputs, feed_dict).reshape(32, 32)
 			interpolations.append(interpolation)
 		samples = np.concatenate([samples_1[0].reshape(32, 32)] + interpolations + [samples_2[0].reshape(32, 32)], axis=1)
-		scale = 2
+		scale = 1
 		Image.fromarray(samples * 255).resize((samples.shape[1] * scale, samples.shape[0] * scale)).show()
 
 

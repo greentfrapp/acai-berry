@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image
 
+
 class LineTask():
 
 	def __init__(self):
@@ -11,8 +12,11 @@ class LineTask():
 		self.uncropped_height = 50
 		self.uncropped_width = 50
 
-	def next_batch(self, batchsize):
-		angles = np.random.rand(batchsize * 2) * (self.angle_range[1] - self.angle_range[0]) + self.angle_range[0]
+	def next_batch(self, batchsize, start=None, end=None):
+		if start is not None and end is not None and batchsize == 1:
+			angles = [start%360, end%360]
+		else:
+			angles = np.random.rand(batchsize * 2) * (self.angle_range[1] - self.angle_range[0]) + self.angle_range[0]
 		images = np.zeros((batchsize, self.uncropped_height, self.uncropped_width))
 		images[:, int(self.uncropped_width / 2):int(self.uncropped_width / 2 + self.length), int(self.uncropped_width / 2)] = 1
 		image = images[0]
