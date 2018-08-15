@@ -10,8 +10,8 @@ from .Critic import Critic
 class ACAI(BaseModel):
 
 	def __init__(self, name='acai', gamma=0.2, lmbda=0.5):
-		self.gamma = gamma
-		self.lmbda = lmbda
+		# self.gamma = gamma
+		# self.lmbda = lmbda
 		self.name = name
 		with tf.variable_scope(self.name):
 			self.build_model()
@@ -36,6 +36,17 @@ class ACAI(BaseModel):
 			name='inputs_alpha',
 		)
 
+		self.gamma = tf.placeholder(
+			shape=(),
+			dtype=tf.float32,
+			name='gamma',
+		)
+		self.lmbda = tf.placeholder(
+			shape=(),
+			dtype=tf.float32,
+			name='lmbda',
+		)
+
 		# Reconstruction for x_1
 		self.encoder_1 = Encoder(self.inputs_image_1)
 		self.decoder_1 = Decoder(self.encoder_1.outputs)
@@ -53,20 +64,20 @@ class ACAI(BaseModel):
 		
 		# Critic scores
 		self.critic_interpolation = Critic(self.reconstruction_interpolation) # This should be alpha
-		self.critic_regular_1 = Critic(self.gamma * self.inputs_image_1 + (1 - self.gamma) * self.reconstruction_1) # This should be 0
+		self.critic_regularization = Critic(self.gamma * self.inputs_image_1 + (1 - self.gamma) * self.reconstruction_1) # This should be 0
 
 		# Autoencoder losses
-		self.reconstruction_loss_1 = tf.losses.mean_squared_error(labels=self.inputs_image_1, predictions=self.decoder_1.outputs)
-		regularization_loss = self.lmbda * tf.reduce_mean(self.critic_interpolation.outputs ** 2)
-		self.autoencoder_loss = self.reconstruction_loss_1 + regularization_loss
+		self.reconstruction_loss = tf.losses.mean_squared_error(labels=self.inputs_image_1, predictions=self.decoder_1.outputs)
+		autoencoder_regularization_loss = self.lmbda * tf.reduce_mean(self.critic_interpolation.outputs ** 2)
+		self.autoencoder_loss = self.reconstruction_loss + autoencoder_regularization_loss
 
 		autoencoder_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'acai/encoder') + tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'acai/decoder')
-		self.autoencoder_optimize = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(self.autoencoder_loss, var_list=autoencoder_vars)
+		self.autoencoder_optimize = tf.train.AdamOptimizer(learning_rate=2e-4).minimize(self.autoencoder_loss, var_list=autoencoder_vars)
 
 		# Critic losses
-		critic_loss_1 = tf.losses.mean_squared_error(labels=self.inputs_alpha, predictions=self.critic_interpolation.outputs)
-		critic_loss_2 = tf.reduce_mean(self.critic_regular_1.outputs ** 2)
-		self.critic_loss = critic_loss_1 + critic_loss_2
+		critic_error_loss = tf.losses.mean_squared_error(labels=self.inputs_alpha, predictions=self.critic_interpolation.outputs)
+		critic_regularization_loss = tf.reduce_mean(self.critic_regularization.outputs ** 2)
+		self.critic_loss = critic_error_loss + critic_regularization_loss
 
 		critic_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'acai/critic')
 		self.critic_optimize = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(self.critic_loss, var_list=critic_vars)
