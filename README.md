@@ -30,7 +30,15 @@ $ main.py --generate --start=135 --end=0
 
 will generate a row of images (see below) interpolating from the left to the right. The original (non-reconstructed) images are the first and last, while the second and second-last images are the respective reconstructions.
 
-![Sample image to reproduce Figure 3 in original paper](https://raw.githubusercontent.com/greentfrapp/acai-berry/master/sample.png)
+![Sample image to reproduce Figure 3 in original paper](https://raw.githubusercontent.com/greentfrapp/acai-berry/master/sample_1.png)
+
+Another sample with `--start=0` and `--end=-90`:
+
+![Interpolating from 0 to -90 degrees](https://raw.githubusercontent.com/greentfrapp/acai-berry/master/sample_2.png)
+
+The results seem to be rather poor when the difference between start and end is too large (> ~135) eg. `--start=0` and `--end=180`:
+
+![Poor results when attempting to interpolate from 0 to 180 degrees](https://raw.githubusercontent.com/greentfrapp/acai-berry/master/sample_3.png)
 
 Refer to `main.py` for more arguments to use with `--train` or `--generate`.
 
