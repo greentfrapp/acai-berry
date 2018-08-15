@@ -1,6 +1,6 @@
 # acai-berry
 
-A Tensorflow implementation of ACAI from:
+A Tensorflow implementation of Adversarially Constrained Autoencoder Interpolation (ACAI) from:
 
 [Berthelot, David, et al. **"Understanding and Improving Interpolation in Autoencoders via an Adversarial Regularizer."** arXiv preprint arXiv:1807.07543 (2018).](https://arxiv.org/abs/1807.07543)
 
