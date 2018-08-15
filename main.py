@@ -15,7 +15,7 @@ flags.DEFINE_bool('generate', False, 'Generate')
 
 # --train parameters
 flags.DEFINE_bool('resume', False, 'Resume training from saved model in --savepath')
-flags.DEFINE_integer('steps', 50000, 'Number of training steps')
+flags.DEFINE_integer('steps', 20000, 'Number of training steps')
 flags.DEFINE_string('savepath', 'saved_models/', 'Path to save or load models')
 flags.DEFINE_integer('batchsize', 64, 'Training batchsize')
 
