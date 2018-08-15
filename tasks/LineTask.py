@@ -17,9 +17,8 @@ class LineTask():
 			angles = [start%360, end%360]
 		else:
 			angles = np.random.rand(batchsize * 2) * (self.angle_range[1] - self.angle_range[0]) + self.angle_range[0]
-		images = np.zeros((batchsize, self.uncropped_height, self.uncropped_width))
-		images[:, int(self.uncropped_width / 2):int(self.uncropped_width / 2 + self.length), int(self.uncropped_width / 2)] = 1
-		image = images[0]
+		image = np.zeros((self.uncropped_height, self.uncropped_width))
+		image[int(self.uncropped_width / 2), int(self.uncropped_width / 2):int(self.uncropped_width / 2 + self.length), ] = 1
 		crop_dim = (
 			(self.uncropped_width - self.width) / 2,
 			(self.uncropped_height - self.height) / 2,
