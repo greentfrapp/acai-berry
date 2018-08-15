@@ -10,9 +10,9 @@ A Tensorflow implementation of Adversarially Constrained Autoencoder Interpolati
 
 This is NOT the original implementation. The original authors' implementation is [here](https://github.com/brain-research/acai).
 
-~~There seems to be some parts I'm missing since the generated images (see below) appear to be of significantly lower quality than the images shown in the paper (compare to Figure 3 in original paper).~~
+There seems to be some parts I'm missing since the generated images (see below) appear to be of significantly lower quality than the images shown in the paper (see Figure 3 in original paper).
 
-Turns out the original implementation used a 2-pixel thick line, as well as -1 for black pixels and 1 for white (the line segment) for the line task. Changing the input to have this distribution gave better-looking images (see [sample_old.png](https://raw.githubusercontent.com/greentfrapp/acai-berry/master/sample_old.png) versus the image below for comparison).
+One change I am aware of is using a larger learning rate of 2e-4 for the autoencoder, which I implemented to get better reconstruction.
 
 ## Instructions
 
